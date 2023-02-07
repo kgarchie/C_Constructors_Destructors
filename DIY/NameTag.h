@@ -1,18 +1,22 @@
-#include <string>
+#pragma once
 #include <iostream>
 
 namespace sdds
 {
-    struct NameTag
+    const int MAX_NAME = 40;
+    const int EXT_LEN = 5;
+
+    class NameTag
     {
+        char m_name[MAX_NAME + 1];
+        int m_extension;
+
+    public:
         NameTag();
-        NameTag(std::string name);
-        NameTag(std::string name, int extension);
+        NameTag(const char *name);
+        NameTag(const char *name, int extension);
         ~NameTag();
         NameTag &read();
-        void print();
-
-        std::string name;
-        int extension;
+        void print() const;
     };
 }

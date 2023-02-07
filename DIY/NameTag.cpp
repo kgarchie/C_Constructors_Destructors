@@ -1,120 +1,135 @@
-#include <limits>
 #include "NameTag.h"
+#include <cstring>
 
-namespace sdds
+using namespace std;
+using namespace sdds;
+
+NameTag::NameTag()
 {
+    m_name[0] = '\0';
+    m_extension = 0;
+}
 
-    NameTag::NameTag() : extension(0) {}
-
-    NameTag::NameTag(std::string name) : name(name), extension(0) {}
-
-    NameTag::NameTag(std::string name, int extension) : name(name), extension(extension) {}
-
-    NameTag::~NameTag() {}
-
-    NameTag &NameTag::read()
+NameTag::NameTag(const char *name)
+{
+    if (name == nullptr)
     {
-        std::cout << "Please enter the name: ";
-        std::cin.ignore();
-        std::getline(std::cin, name);
-        if (name.length() > 40)
-        {
-            name = name.substr(0, 40);
-        }
-        char answer;
-        std::cout << "Would you like to enter an extension? (Y)es/(N)o: ";
-        std::cin >> answer;
-        while (answer != 'Y' && answer != 'y' && answer != 'N' && answer != 'n')
-        {
-            std::cout << "Only (Y) or (N) are acceptable, try again: ";
-            std::cin >> answer;
-        }
-        if (answer == 'Y' || answer == 'y')
-        {
-            int input;
-            std::cout << "Please enter a 5 digit phone extension: ";
-            std::cin >> input;
-            while (std::cin.fail() || input < 10000 || input > 99999)
-            {
-                if (std::cin.fail())
-                {
-                    std::cout << "Bad integer value, try again: ";
-                }
-                else
-                {
-                    std::cout << "Invalid value [10000<=value<=99999]: ";
-                }
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::cin >> input;
-            }
-            extension = input;
-        }
-        return *this;
+        m_name[0] = '\0';
     }
-
-    void NameTag::print()
+    else
     {
-        if (name.empty())
-        {
-            std::cout << "EMPTY NAMETAG!" << std::endl;
-            return;
-        }
-        std::cout << "+";
-        for (int i = 0; i < 40; i++)
-        {
-            std::cout << "-";
-        }
-        std::cout << "+" << std::endl;
-        std::cout << "|";
-        for (int i = 0; i < 40; i++)
-        {
-            std::cout << " ";
-        }
-        std::cout << "|" << std::endl;
-        std::cout << "|";
-        if (name.length() < 20)
-        {
-            for (int i = 0; i < (20 - name.length()) / 2; i++)
-            {
-                std::cout << " ";
-            }
-            std::cout << name;
-            for (int i = 0; i < (20 - name.length()) / 2; i++)
-            {
-                std::cout << " ";
-            }
-            if ((20 - name.length()) % 2 == 1)
-            {
-                std::cout << " ";
-            }
-        }
-        else
-        {
-            std::cout << name.substr(0, 20);
-        }
-        std::cout << "|" << std::endl;
-        std::cout << "|";
-        for (int i = 0; i < 40; i++)
-        {
-            std::cout << " ";
-        }
-        std::cout << "|" << std::endl;
-        std::cout << "|";
-        if (extension != 0)
-        {
-            std::cout << "Extension: " << extension;
-        }
-        for (int i = 0; i < 40; i++)
-        {
-            std::cout << " ";
-        }
-        std::cout << "|" << std::endl;
-        std::cout << "+";
-        for (int i = 0; i < 40; i++)
-        {
-            std::cout << "-";
-        }
-        std::cout << "+" << std::endl;
+        strncpy(m_name, name, MAX_NAME);
+        m_name[MAX_NAME] = '\0';
     }
+    m_extension = 0;
+}
+
+NameTag::NameTag(const char *name, int extension)
+{
+    if (name == nullptr)
+    {
+        m_name[0] = '\0';
+    }
+    else
+    {
+        strncpy(m_name, name, MAX_NAME);
+        m_name[MAX_NAME] = '\0';
+    }
+    m_extension = extension;
+}
+
+NameTag::~NameTag()
+{
+    m_name[0] = '\0';
+    m_extension = 0;
+}
+
+NameTag &NameTag::read()
+{
+    cout << "Please enter the name: ";
+    cin.getline(m_name, MAX_NAME + 1);
+    cout << "Would you like to enter an extension? (Y)es/(N)o: ";
+    char answer;
+    cin >> answer;
+    if (answer == 'Y' || answer == 'y')
+    {
+        cout << "Please enter a 5 digit phone extension: ";
+        int ext;
+        cin >> ext;
+        while (ext < 10000 || ext > 99999)
+        {
+            cout << "Invalid value [10000<=value<=99999]: ";
+            cin >> ext;
+        }
+        m_extension = ext;
+    }
+    else
+    {
+        m_extension = 0;
+    }
+    return *this;
+}
+
+void NameTag::print() const
+{
+    int nameLen = strlen(m_name);
+    int remainLen = MAX_NAME - nameLen;
+
+    cout << "+";
+    for (int i = 0; i < MAX_NAME + 2; i++)
+    {
+        cout << "-";
+    }
+    cout << "+" << endl;
+    cout << "|";
+    for (int i = 0; i < remainLen / 2; i++)
+    {
+        cout << " ";
+    }
+    cout << m_name;
+    for (int i = 0; i < remainLen / 2; i++)
+    {
+        cout << " ";
+    }
+    if (remainLen % 2 != 0)
+    {
+        cout << " ";
+    }
+    cout << "|" << endl;
+    cout << "|";
+    for (int i = 0; i < MAX_NAME + 2; i++)
+    {
+        cout << " ";
+    }
+    cout << "|" << endl;
+    if (m_extension != 0)
+    {
+        cout << "| Extension: " << m_extension;
+        for (int i = 0; i < MAX_NAME - 10; i++)
+        {
+            cout << " ";
+        }
+        cout << "|" << endl;
+    }
+    else
+    {
+        cout << "| Extension: N/A";
+        for (int i = 0; i < MAX_NAME - 11; i++)
+        {
+            cout << " ";
+        }
+        cout << "|" << endl;
+    }
+    cout << "|";
+    for (int i = 0; i < MAX_NAME + 2; i++)
+    {
+        cout << " ";
+    }
+    cout << "|" << endl;
+    cout << "+";
+    for (int i = 0; i < MAX_NAME + 2; i++)
+    {
+        cout << "-";
+    }
+    cout << "+" << endl;
 }

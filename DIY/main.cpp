@@ -28,6 +28,7 @@ int main() {
             {"Bad number", 123456}  // two argument constructor with bad number
             // default constructor (sixth element)
     };
+
     int i;
     for (i = 0; i < 6; i++) {
         nt[i].print();

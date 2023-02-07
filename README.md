@@ -1,4 +1,4 @@
-# C_Constructors_Destructors
+# CXX_Constructors_Destructors
 
-Constructors and Destructors Demo in C
+Constructors and Destructors Demo in CXX
 Makefile Project
